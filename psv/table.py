@@ -1,4 +1,4 @@
-from pysaves.selection import Selection
+from psv.selection import Selection
 from .entry import Entry, NullEntry
 
 class Table:

@@ -1,4 +1,4 @@
-import pysaves as psv
+import psv
 
 
 with open("test.psv", "r") as f:
