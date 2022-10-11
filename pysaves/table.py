@@ -30,7 +30,7 @@ class Table:
                 del self.entries[entry]
                 return
 
-    def where(self, condition):
+    def where(self, condition) -> Selection:
         if not callable(condition):
             cond = lambda entry: eval(condition, {}, {"_table": self, "_entry": entry, "uuid": entry.uuid, **entry.data})
         else:

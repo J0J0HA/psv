@@ -4,7 +4,7 @@ class Entry:
     def __init__(self, uuid: str, data: dict):
         if "uuid" in data:
             raise KeyError("No Key can be named uuid.")
-        self.uuid = uuid
+        self.uuid = str(uuid)
         self.data = data
 
     def __getitem__(self, key):

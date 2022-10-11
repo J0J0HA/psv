@@ -2,6 +2,7 @@ from typing import Callable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from models import Table
+    from models import Selection
 
 class Selection:
     def __init__(self, table: "Table", condition: Callable, entries: list):
@@ -25,7 +26,7 @@ class Selection:
         for entry in self.entries:
             del entry[key]
 
-    def where(self, condition):
+    def where(self, condition) -> "Selection":
         if not callable(condition):
             cond = lambda entry: eval(condition, {}, {"_table": self, "_entry": entry, "uuid": entry.uuid, **entry.data})
         else:
@@ -41,7 +42,7 @@ class Selection:
         return len(self.entries)
 
     def __iter__(self):
-        raise NotImplementedError
+        return iter(self.entries)
 
     def __repr__(self):
         return f"<psv.Selection length={len(self.entries)}>"
