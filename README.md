@@ -1,2 +1,2 @@
 # pysaves
-This is no pinapple.
+This is no pineapple.
