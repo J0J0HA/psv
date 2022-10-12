@@ -51,5 +51,7 @@ def clean_str(txt: str) -> str:
     txt = txt.replace("!n!", "\n")
     txt = txt.replace("!d!", ":")
     txt = txt.replace("!h!", "|")
+    txt = txt.replace("!r!", "#")
+    txt = txt.replace("!q!", "?")
     txt = txt.replace("!w!", "!")
     return txt

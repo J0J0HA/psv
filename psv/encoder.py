@@ -1,5 +1,7 @@
 from typing import Any
-from .table import Table, Entry
+from psv.entry import NullEntry, Entry
+from .table import Table
+
 import json
 
 def encode(tbl: Table) -> str:
@@ -12,10 +14,13 @@ def encode(tbl: Table) -> str:
 def encode_etr(etr: Entry) -> str:
     rst = []
     for key, val in etr.data.items():
-        eckey = encode_elm(key)
-        ecval = encode_elm(val)
-        rst.append(eckey + ":" + ecval)
+        rst.append(encode_pair(key, val))
     return etr.uuid + " " + ";".join(rst)
+
+def encode_pair(key: Any, val: Any) -> str:
+    eckey = encode_elm(key)
+    ecval = encode_elm(val)
+    return eckey + ":" + ecval
 
 def encode_elm(elm: Any) -> str:
     cls = encode_class(elm)
@@ -37,6 +42,8 @@ def clean_str(txt: str) -> str:
     txt = txt.replace(";", "!s!")
     txt = txt.replace("\n", "!n!")
     txt = txt.replace(":", "!d!")
+    txt = txt.replace("?", "!q!")
+    txt = txt.replace("#", "!r!")
     txt = txt.replace("|", "!h!")
     return txt
 

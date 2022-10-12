@@ -1,5 +1,7 @@
+from typing import IO, Union
 from psv.selection import Selection
 from .entry import Entry, NullEntry
+
 
 class Table:
     def __init__(self, table: dict = None):
@@ -29,6 +31,9 @@ class Table:
             if self.entries[entry].uuid == uuid:
                 del self.entries[entry]
                 return
+
+    def others(self) -> Selection:
+        return Selection(self, lambda e: False, [])
 
     def where(self, condition) -> Selection:
         if not callable(condition):

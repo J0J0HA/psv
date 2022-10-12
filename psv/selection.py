@@ -1,12 +1,12 @@
-from typing import Callable, TYPE_CHECKING
+from typing import Union, Callable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from models import Table
     from models import Selection
 
 class Selection:
-    def __init__(self, table: "Table", condition: Callable, entries: list):
-        self.table = table
+    def __init__(self, parent: Union["Table", "Selection"], condition: Callable, entries: list):
+        self.parent = parent
         self.condition = condition
         self.entries = entries
     
@@ -32,11 +32,19 @@ class Selection:
         else:
             cond = condition
         final = lambda entry: self.condition(entry) and cond(entry)
-        return self.table.where(final)
+        return self.parent.where(final)
 
     def delete(self):
         for entry in self.entries:
-            del self.table[entry.uuid]
+            del self.parent[entry.uuid]
+
+    __setitem__ = set
+    __getitem__ = get
+    __delitem__ = remove
+    # __del__ = delete      !!! Results in everything getting deleted.
+
+    def others(self):
+        return self.parent.where(lambda e: not self.condition(e))
 
     def __len__(self):
         return len(self.entries)
@@ -45,4 +53,4 @@ class Selection:
         return iter(self.entries)
 
     def __repr__(self):
-        return f"<psv.Selection length={len(self.entries)}>"
+        return f"<psv.Selection entries={len(self.entries)}>"
