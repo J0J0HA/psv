@@ -3,8 +3,8 @@ from pickletools import read_unicodestringnl
 from typing import IO, Union, Callable
 from werkzeug.serving import run_simple
 from werkzeug.wrappers import Response, Request
-from .encoder import encode_etr, encode_elm
-from .decoder import decode_pair, decode_elm, clean_str as unclean_str
+from .encoder import encode, encode_etr, encode_elm
+from .decoder import decode_pair, decode_elm
 from .table import Table
 from .exceptions import TooMuchDataError, NoSuchClassError
 from psv.entry import NullEntry
@@ -68,10 +68,7 @@ def create_server(tbl: Table, tblf: Union[str, None] = None):
                     write(tf, tbl)
         elif action == "get":
             if len(p) == 1:
-                uuids = []
-                for entry in tbl:
-                    uuids.append(entry.uuid)
-                response = Response("[R] " + ";".join(uuids), 200, mimetype='text/plain')
+                response = Response("[R] " + encode(tbl), 200, mimetype='text/plain')
             else:
                 entry = tbl[p[1]]
                 if isinstance(entry, NullEntry):

@@ -1,3 +1,5 @@
+from .remoteentry import RemoteEntry
+from .remotetable import RemoteTable
 from .exceptions import NoSuchClassError, TooMuchDataError
 from typing import Any
 from .table import Table, Entry
@@ -11,6 +13,14 @@ def decode(txt: str):
         tbl.append(decode_etr(line))
     return tbl
 
+def decode_remote(txt: str, connector):
+    tbl = RemoteTable(connector)
+    for line in txt.split("\n"):
+        if line.strip() == "" or line.startswith(":"):
+            continue
+        tbl.append(decode_remote_etr(line, connector))
+    return tbl
+
 def decode_etr(txt: str) -> Entry:
     data = txt.split(" ", 1)
     uuid = data[0]
@@ -21,6 +31,18 @@ def decode_etr(txt: str) -> Entry:
             key, val = decode_pair(pair)
             dat[key] = val
     return Entry(uuid, dat)
+
+
+def decode_remote_etr(txt: str, connector) -> RemoteEntry:
+    data = txt.split(" ", 1)
+    uuid = data[0]
+    pairs = data[1].split(";")
+    dat = {}
+    if pairs and pairs[0]:
+        for pair in pairs:
+            key, val = decode_pair(pair)
+            dat[key] = val
+    return RemoteEntry(uuid, dat, connector)
 
 def decode_pair(txt: str) -> tuple:
     data = txt.split(":", 1)
